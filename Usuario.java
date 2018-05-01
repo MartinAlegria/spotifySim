@@ -11,6 +11,7 @@ public class Usuario{
 
 	static BufferedWriter bw;
     static BufferedReader br;
+    static File f;
 
 	//Constructor 
 	Usuario(String name, int age, String username, String password, boolean sub){
@@ -20,6 +21,10 @@ public class Usuario{
 		this.password = password;
 		this.sub = sub;
 	}
+
+	public String getName(){return name;}
+	public String getUser(){return username;}
+	public String getPass(){return password;}
 
 	public String print(){
 		String a;
@@ -40,6 +45,10 @@ public class Usuario{
 		bw.flush();
 		bw.close();
 		}catch(IOException e){e.printStackTrace();}	
+
+		f = new File(username.toLowerCase() + "_Library");
+		f.mkdir();
+
 	}
 
 }//Class Usuario
