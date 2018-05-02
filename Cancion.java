@@ -13,6 +13,7 @@ public class Cancion{
     static BufferedWriter bw;
     static BufferedReader br;
     static File f;
+    static Scanner input = new Scanner(System.in);
 
 
     //Constructor
@@ -24,8 +25,16 @@ public class Cancion{
         this.runtime = runtime;
     }
 
-    public void write(Usuario user){
+    public String getName(){ return name;}
+    public String getArtist(){ return artist;}
 
+    public void setName(String name){this.name = name;}
+    public void setArtist(String artist){this.artist = artist;}
+    public void setAlbum(String album){this.album = album;}
+    public void setYear(int year){this.year = year;}
+    public void setRuntime(int runtime){this.runtime = runtime;}
+
+    public void write(Usuario user){
 
         try{
         bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "songLib.csv",true)); 
@@ -34,17 +43,39 @@ public class Cancion{
         bw.flush();
         bw.close();
         }catch(IOException e){e.printStackTrace();} 
-
     }
 
+    public void editData(){
+
+        System.out.println("\t Ingresa el nombre de la cancion");
+        String nombreCancion = input.nextLine();
+        System.out.println("\t Ingresa el artista de la cancion");
+        String artistaCancion = input.nextLine();
+        System.out.println("\t Ingresa el album de la cancion");
+        String n_albumCancion = input.nextLine();
+        System.out.println("\t Ingresa el año de la cancion");
+        int yearCancion = input.nextInt();
+        System.out.println("\t Ingresa el runtime de la cancion en segundos \n \t [Ej. 1:30 min = 90 seg ]" );
+        int rtCancion = input.nextInt();
+
+        setName(nombreCancion);
+        setArtist(artistaCancion);
+        setAlbum(n_albumCancion);
+        setYear(yearCancion);
+        setRuntime(rtCancion);
+    }
+
+    public void writeOut(Usuario user){
+
+        try{
+            bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "songLib.csv")); 
+            bw.write("");
+            bw.flush();
+            bw.close();
+        }catch(IOException e){e.printStackTrace();} 
+    }
+
+ 
 
 }//Class Cancion 
 
-/*
-    public void setNombre(String nombre){this.nombre = nombre;}
-    public void setArtista(String artista){this.artista = artista;}
-    public void setAlubm(String album){this.album = album;}
-    public void setYear(int year){this.year = year;}
-    public void setRating(int rating){this.rating = rating;}
-    public void intRuntime(int runtime){this.runtime = runtime;}
-*/

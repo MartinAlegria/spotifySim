@@ -21,6 +21,7 @@ public class MainSpotify{
 	static Cancion song;	
 	static Album album;
     static BufferedReader br;
+    static BufferedWriter bw;
 	static File f = new File("users.csv");
 
 	public static void main(String[] args) {
@@ -51,6 +52,7 @@ public class MainSpotify{
 						if(logIn()) {
 							System.out.println("////////// Bienvenido " + currentUser.getName() + " //////////");
 							correcto = true;
+							readSongLib();
 						
 							boolean logOut = false;
 							do{
@@ -65,12 +67,43 @@ public class MainSpotify{
 											int cancionesDec = input.nextInt();
 											input.nextLine();
 
-											switch(cancionesDec){
+											if(cancionesDec >= 1 && cancionesDec <= songLib.size()) {
 												
-												case 0:
-													createSong();
-													break;
+												System.out.println("\t " + songLib.get(cancionesDec - 1).getName() + ":");
+												System.out.println("\t 1.- Reproducir Cancion"); //TIMER TASK
+												System.out.println("\t 2.- Editar Cancion");
+												System.out.println("\t 3.- Eliminar Cancion");
+												System.out.println("\t 0.- Regresar");
+												int specificSongDec = input.nextInt();
 
+													switch(specificSongDec){
+
+														case 0:
+															break;
+
+														case 1: //TIMER TASK DE REPRODUCIR
+															break;
+
+														case 2: //EDTIAR CANCION
+															songLib.get(cancionesDec-1).editData();
+															writeOUTSongLib();
+															writeSongLib();
+															readSongLib();
+															break;
+
+														case 3: //BORRAR CANCION
+															songLib.remove(songLib.get(cancionesDec-1));
+															writeOUTSongLib();
+															writeSongLib();
+															readSongLib();
+															break;	
+
+													}
+
+											}else if (cancionesDec == 0){
+												createSong();
+											}else if (cancionesDec == -1){
+												break;
 											}
 
 										break;
@@ -172,6 +205,36 @@ public class MainSpotify{
 			}catch(IOException e){e.printStackTrace();}
 	}//READ
 
+	public static void readSongLib(){
+
+		String[] sL = new String[5];
+		boolean loop = true;
+		songLib.clear();	
+
+		try{
+			
+
+			br = new BufferedReader(new FileReader(user.getUser().toLowerCase() + "_Library/" + "songLib.csv"));
+			String read;
+			
+			while((read = br.readLine() ) != null){
+			
+				sL = read.split(",");
+				loop = true;
+
+				String name = sL[0];
+				String artist = sL[1];
+				String album = sL[2];
+				int year = Integer.parseInt(sL[3]);
+				int runtime = Integer.parseInt(sL[4]);
+
+				song = new Cancion(name, artist, album, year, runtime);
+				songLib.add(song);
+			}		
+
+		}catch(IOException e){e.printStackTrace();}	
+	}//READ_SONG_LIBRARY
+
 	public static boolean logIn(){
 
 		boolean log = true;
@@ -205,6 +268,11 @@ public class MainSpotify{
 	public static void canciones(){
 
 		System.out.println("\t 0.- Añadir cancion");
+		System.out.println("\t -1.- Regresar\n\n\t ///////// TU LIBRERIA DE CANCIONES: /////////");
+
+		for(int i = 0; i<songLib.size(); i++) {
+			System.out.println("\t "+ (i+1) + ".- " + songLib.get(i).getName() + "\t\t" + songLib.get(i).getArtist());
+		}
 
 	}//CANCIONES
 
@@ -224,10 +292,44 @@ public class MainSpotify{
 
 		song = new Cancion(nombreCancion, artistaCancion, n_albumCancion, yearCancion, rtCancion);
 		songLib.add(song);
-		song.write(currentUser);
-
+		writeOUTSongLib();
+		writeSongLib();
+		
 	}//CREATE_SONG
 
+	public static void writeSongLib(){
+
+		if(songLib.size() == 0) {
+		try{
+            bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "songLib.csv")); 
+            bw.write("");
+            bw.flush();
+            bw.close();
+        }catch(IOException e){e.printStackTrace();} 
+
+		}else{
+			for(int i = 0; i<songLib.size(); i++) {
+			songLib.get(i).write(currentUser);
+			}
+		}
+
+	}
+
+	public static void writeOUTSongLib(){
+		if(songLib.size() == 0) {
+		try{
+            bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "songLib.csv")); 
+            bw.write("");
+            bw.flush();
+            bw.close();
+        }catch(IOException e){e.printStackTrace();} 
+
+		}else{
+			for(int i = 0; i<songLib.size(); i++) {
+			songLib.get(i).writeOut(currentUser);
+			}
+		}
+	}
 
 }//Class MainSpotify
 
