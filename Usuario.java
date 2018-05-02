@@ -46,8 +46,26 @@ public class Usuario{
 		bw.close();
 		}catch(IOException e){e.printStackTrace();}	
 
-		f = new File(username.toLowerCase() + "_Library");
-		f.mkdir();
+		f = new File(username.toLowerCase() + "_Library/songLib.csv");
+		f.getParentFile().mkdir();
+
+		try{
+            f.createNewFile();
+        }catch(IOException e){}
+
+		f = new File(username.toLowerCase() + "_Library/plistLib.csv");
+		f.getParentFile().mkdir();
+
+        try{
+            f.createNewFile();
+        }catch(IOException e){}
+
+        f = new File(username.toLowerCase() + "_Library/albumLib.csv");
+		f.getParentFile().mkdir();
+
+        try{
+            f.createNewFile();
+        }catch(IOException e){}
 
 	}
 

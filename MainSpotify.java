@@ -18,6 +18,8 @@ public class MainSpotify{
 
 	static Usuario user;
 	static Usuario currentUser;
+	static Cancion song;	
+	static Album album;
     static BufferedReader br;
 	static File f = new File("users.csv");
 
@@ -57,6 +59,20 @@ public class MainSpotify{
 
 								switch(eleccion){
 									case 1: //CANCIONES
+
+										canciones();
+
+											int cancionesDec = input.nextInt();
+											input.nextLine();
+
+											switch(cancionesDec){
+												
+												case 0:
+													createSong();
+													break;
+
+											}
+
 										break;
 
 									case 2: //ALBUMS
@@ -194,11 +210,21 @@ public class MainSpotify{
 
 	public static void createSong(){
 
+		System.out.println("\t CREAR CANCION");
 		System.out.println("\t Ingresa el nombre de la cancion");
-		String nombreCancion = input.next();
+		String nombreCancion = input.nextLine();
 		System.out.println("\t Ingresa el artista de la cancion");
-		String artistaCancion = input.next();
-		System.out.println("\t Ingresa ");
+		String artistaCancion = input.nextLine();
+		System.out.println("\t Ingresa el album de la cancion");
+		String n_albumCancion = input.nextLine();
+		System.out.println("\t Ingresa el año de la cancion");
+		int yearCancion = input.nextInt();
+		System.out.println("\t Ingresa el runtime de la cancion en segundos \n \t [Ej. 1:30 min = 90 seg ]" );
+		int rtCancion = input.nextInt();
+
+		song = new Cancion(nombreCancion, artistaCancion, n_albumCancion, yearCancion, rtCancion);
+		songLib.add(song);
+		song.write(currentUser);
 
 	}//CREATE_SONG
 

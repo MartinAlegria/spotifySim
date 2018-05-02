@@ -1,3 +1,6 @@
+import java.io.*;
+import java.util.*;
+
 public class Cancion{
 
     //Variables 
@@ -5,20 +8,35 @@ public class Cancion{
     private String artist;  //Artista
     private String album;   //Album al que pertenece
     private int year;       //Año en el que fue lanzada 
-    private int rating;     //Rating que da el usuario (1 al 5)
     private int runtime;    //Runtime de la cancion (segundos)
 
+    static BufferedWriter bw;
+    static BufferedReader br;
+    static File f;
+
+
     //Constructor
-    Cancion(String name, String artist, String album, int year, int rating, int runtime){
+    Cancion(String name, String artist, String album, int year, int runtime){
         this.name = name;
         this.artist = artist;
         this.album = album;
         this.year = year;
-        this.rating = rating;
         this.runtime = runtime;
     }
 
-    
+    public void write(Usuario user){
+
+
+        try{
+        bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "songLib.csv",true)); 
+        bw.write(name + "," + artist + "," + album + "," + year + "," + runtime);
+        bw.newLine();
+        bw.flush();
+        bw.close();
+        }catch(IOException e){e.printStackTrace();} 
+
+    }
+
 
 }//Class Cancion 
 
