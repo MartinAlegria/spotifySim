@@ -17,7 +17,18 @@ public class Playlist{
 
 	//El constructor que se usaria para inicialziar un Album mediante herencia
 	Playlist(String name, ArrayList<Cancion> songList){
+		this.name = name;
+		this.songList = songList;
+	}
 
+	public String getName(){ return name;}
+
+	public void write(Usuario user){
+		System.out.println("LOL");
+	}
+
+	public void writeOut(Usuario user){
+		System.out.println("LOL");
 	}
 
 }//class Playlist

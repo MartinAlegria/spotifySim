@@ -27,6 +27,8 @@ public class Cancion{
 
     public String getName(){ return name;}
     public String getArtist(){ return artist;}
+    public int getYear(){return year;}
+    public int getRuntime() {return runtime;}
 
     public void setName(String name){this.name = name;}
     public void setArtist(String artist){this.artist = artist;}
@@ -42,6 +44,15 @@ public class Cancion{
         bw.newLine();
         bw.flush();
         bw.close();
+        }catch(IOException e){e.printStackTrace();} 
+    }
+
+    public void write(Usuario user, String file, String path){
+
+        try{
+        bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/Albums/" + file,true)); 
+        bw.write(name + "," + artist + "," + album + "," + year + "," + runtime);
+        bw.newLine();
         }catch(IOException e){e.printStackTrace();} 
     }
 
