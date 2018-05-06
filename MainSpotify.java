@@ -8,7 +8,7 @@ public class MainSpotify{
 	static Scanner input = new Scanner(System.in);
 	
 	static ArrayList<Cancion> recentList = new ArrayList<Cancion>();	//A.L. donde se encuentran las canciones recientes
-	static ArrayList<Cancion> albumList = new ArrayList<Cancion>(); 	//A.L. para inicializar un Album
+	static ArrayList<Cancion> albumList;	//A.L. para inicializar un Album
 	static ArrayList<Cancion> playList = new ArrayList<Cancion>(); 		//A.L. para inicializar una Playlist
 	static ArrayList<Usuario> usersList = new ArrayList<Usuario>(); 	//ArrayList donde se encuentran todos los usuarios
 
@@ -27,7 +27,7 @@ public class MainSpotify{
 
 	public static void main(String[] args) {
 
-		System.out.println("\t --------- SPOTIFY ---------");
+		System.out.println("\n\t --------- SPOTIFY ---------");
 		System.out.println("\t Bienvenido!");
 
 		if(f.length() == 0) {
@@ -51,18 +51,19 @@ public class MainSpotify{
 					do{
 
 						if(logIn()) {
-							System.out.println("////////// Bienvenido " + currentUser.getName() + " //////////");
+							System.out.println("\n\t ////////// Bienvenido " + currentUser.getName() + " //////////");
 							correcto = true;
 							readSongLib();
 							readAlbumLib();
 						
-							boolean logOut = false;
+							boolean logOut = false;//VARIABLE QUE SE USA COMO CONDICIONAL DEL DOWHILE
 							do{
 								menu();
 								int eleccion = input.nextInt();
 
 								switch(eleccion){
-									case 1: //CANCIONES
+
+									case 1: //CANCIONES ------------------------------------------------------------------------------------------------
 
 										canciones();
 
@@ -71,7 +72,7 @@ public class MainSpotify{
 
 											if(cancionesDec >= 1 && cancionesDec <= songLib.size()) {
 												
-												System.out.println("\t " + songLib.get(cancionesDec - 1).getName() + ":");
+												System.out.println("\t --- " + songLib.get(cancionesDec - 1).getName() + " ---");
 												System.out.println("\t 1.- Reproducir Cancion"); //TIMER TASK
 												System.out.println("\t 2.- Editar Cancion");
 												System.out.println("\t 3.- Eliminar Cancion");
@@ -95,10 +96,22 @@ public class MainSpotify{
 															break;
 
 														case 3: //BORRAR CANCION
-															songLib.remove(songLib.get(cancionesDec-1));
-															writeOUTSongLib();
-															writeSongLib();
-															readSongLib();
+
+															System.out.println("\t Estas Apunto De Eliminar " + songLib.get(cancionesDec-1).getName() + "\n\t ¿Quieres Continuar? [Y/N]" );
+															char delSong = input.next().charAt(0);
+
+															if(Character.toLowerCase(delSong) == 'y') {
+
+																System.out.println("\t Eliminaste " + songLib.get(cancionesDec-1).getName());
+																songLib.remove(songLib.get(cancionesDec-1));
+																writeOUTSongLib();
+																writeSongLib();
+																readSongLib();
+																
+															}else{
+																System.out.println("\t Eliminacion Cancelada\n\n");
+															}
+														
 															break;	
 
 													}
@@ -111,23 +124,58 @@ public class MainSpotify{
 
 										break;
 
-									case 2: //ALBUMS
+									case 2: //ALBUMS ------------------------------------------------------------------------------------------------
 											albums();
 											int albumsDec = input.nextInt();
 											input.nextLine();
 
-											if(albumsDec >= 1 && albumsDec <= albumList.size()) {
+											if(albumsDec >= 1 && albumsDec <= albumLib.size()) { //UN ALBUM ESPECIFICO FUE SELECCIONADO
 												
-												System.out.println("\t " + albumLib.get(cancionesDec - 1).getName() + ":");
+												System.out.println("\t --- " + albumLib.get(albumsDec - 1).getName() + " --- ");
+												albumLib.get(albumsDec-1).printAlbumSongs();
 												System.out.println("\t 1.- Reproducir Album"); //TIMER TASK
 												System.out.println("\t 2.- Editar Album");
 												System.out.println("\t 3.- Eliminar Album");
 												System.out.println("\t 0.- Regresar");
 												int specificAlbumDec = input.nextInt();
 
+													switch(specificAlbumDec){
+
+														case 0: //REGRESAR
+															break;
+
+														case 1: //REPRODUCIR ALBUM
+															System.out.println("\t////////// AHORA REPRODUCIENDO " + albumLib.get(albumsDec-1).getName().toUpperCase() + " ... //////////"  );														
+															break;
+
+														case 2: //EDITAR ALBUM
+
+															break;
+
+														case 3://ELIMINAR ALBUM
+															System.out.println("\t Estas Apunto De Eliminar " + albumLib.get(albumsDec-1).getName() + "\n\t ¿Quieres Continuar? [Y/N]" );
+															char delAlbum = input.next().charAt(0);
+															
+															if(Character.toLowerCase(delAlbum) == 'y') {
+															
+																System.out.println("\t Eliminaste " + albumLib.get(albumsDec-1).getName());
+																albumLib.get(albumsDec-1).deleteFile(currentUser);
+																albumLib.remove(albumLib.get(albumsDec-1));
+																writeOUTAlbumLib();
+																writeAlbumLib();
+																readAlbumLib();
+
+															}else{
+																System.out.println("\t Eliminacion Cancelada\n\n");
+															}
+
+															break;
+
+													}//ALBUM SPECIFIC MENU
+
 											}else if(albumsDec == 0){ //CREAR ALBUM
 												createAlbum();
-											}else if (albumsDec == -1){
+											}else if (albumsDec == -1){ //REGRESAR
 												break;
 											}
 
@@ -137,7 +185,7 @@ public class MainSpotify{
 										break;
 
 									case 4: //LOGOUT
-										logOut = true;
+										logOut = true;//SE VUELVE VERDADERO Y ROMPE EL LOOP
 										break;
 								}
 
@@ -146,7 +194,7 @@ public class MainSpotify{
 
 						}else{
 							System.out.println("\t Usuario o contraseña incorrecta, intenta de nuevo");
-							correcto = false;
+							correcto = false; //HACE QUE EL LOOP SIGA CORRIENDO
 						}
 
 					}while(!correcto);
@@ -170,6 +218,54 @@ public class MainSpotify{
 
 	}//MAIN
 
+
+	// FUNCTIONS ------------------------------------------------------------------------------------------------
+
+
+	//UI FUNCTIONS		*******************************************
+
+	public static void menu(){
+		System.out.println("\t 1.- Canciones");
+		System.out.println("\t 2.- Albums");
+		System.out.println("\t 3.- Playlist");
+		System.out.println("\t 4.- Log-Out");
+		System.out.println("\t [Ingresa el numero de la opcion deseada]");
+	}//MENU
+
+	public static boolean logIn(){
+
+		System.out.println("\t //////// LOG-IN ////////");
+		boolean log = true;
+		int indexUser = 0;
+
+		System.out.println("\t Ingresa el usuario:");
+		String logUser = input.next();
+
+		System.out.println("\t Ingresa la contraseña: [Case sensitive]");
+		String logPass = input.next();
+
+		for(int i = 0; i<usersList.size(); i++) {
+			if(logUser.equalsIgnoreCase(usersList.get(i).getUser()) &&  logPass.equalsIgnoreCase(usersList.get(i).getPass())) {
+				log = true;
+				indexUser = i;
+				break;
+			}else{
+				log = false;
+			}
+		}//FOR
+
+		currentUser = usersList.get(indexUser);
+
+		if(log) {
+			return true;
+		}else{
+			return false;
+		}
+	
+	}//LOGIN
+
+	//USER FUNCTIONS	*******************************************
+
 	public static void createUser(){
 
 		boolean s;
@@ -191,14 +287,6 @@ public class MainSpotify{
 		usersList.add(user);
 
 	}//CREATE_USER
-
-	public static void menu(){
-		System.out.println("\t 1.- Canciones");
-		System.out.println("\t 2.- Albums");
-		System.out.println("\t 3.- Playlist");
-		System.out.println("\t 4.- Log-Out");
-		System.out.println("\t Ingresa el numero de la opcion deseada");
-	}//MENU
 
 	public static void read(){
 
@@ -231,6 +319,39 @@ public class MainSpotify{
 
 	}//READ
 
+	public static void canciones(){
+
+		System.out.println("\t ///////// TU LIBRERIA DE CANCIONES: /////////");
+		System.out.println("\t [Escribe el numero de tu seleccion]");
+
+		for(int i = 0; i<songLib.size(); i++) {
+			System.out.println("\t "+ (i+1) + ".- " + songLib.get(i).getName() + "\t\t" + songLib.get(i).getArtist());
+		}
+
+		System.out.println("\t ---------------------------------");
+		System.out.println("\t    ***  0.- Añadir Cancion *** ");
+		System.out.println("\t    *** -1.- Regresar ***");
+
+	}//CANCIONES
+
+	public static void albums(){
+
+		System.out.println("\t ///////// TU LIBRERIA DE ALBUMS: /////////");
+		System.out.println("\t [Escribe el numero de tu seleccion]");
+
+		for(int i = 0; i<albumLib.size(); i++) {
+			System.out.println("\t "+ (i+1) + ".- " + albumLib.get(i).getName() + "\t" + albumLib.get(i).getArtist());
+		}
+
+		System.out.println("\t -----------------------------------");
+		System.out.println("\t      ***  0.- Añadir Album *** ");
+		System.out.println("\t      *** -1.- Regresar ***");
+	
+	}//ALBUMS
+
+
+	//SONG FUNCTIONS	*******************************************
+
 	public static void readSongLib(){
 
 		String[] sL = new String[5];
@@ -240,7 +361,7 @@ public class MainSpotify{
 		try{
 			
 
-			br = new BufferedReader(new FileReader(user.getUser().toLowerCase() + "_Library/" + "songLib.csv"));
+			br = new BufferedReader(new FileReader(currentUser.getUser().toLowerCase() + "_Library/" + "songLib.csv"));
 			String read;
 			
 			while((read = br.readLine() ) != null){
@@ -261,97 +382,6 @@ public class MainSpotify{
 		}catch(IOException e){e.printStackTrace();}	
 
 	}//READ_SONG_LIBRARY
-
-
-	public static void readAlbumLib(){
-
-		String[] sL = new String[5];
-		String[] aL = new String[5];
-		boolean loop = true;
-		songLib.clear();	
-
-		try{
-			
-
-			br = new BufferedReader(new FileReader(user.getUser().toLowerCase() + "_Library/" + "albumLib.csv"));
-			String read;
-			
-			while((read = br.readLine() ) != null){
-			
-				aL = read.split(",");
-				loop = true;
-
-				String name = aL[0];
-				String artist = aL[1];
-
-
-					br2 = new BufferedReader(new FileReader(user.getUser().toLowerCase() + "_Library/Albums/" +  name +".csv"));
-
-					String read2;
-					while((read2 = br2.readLine() ) != null){
-			
-						sL = read2.split(",");
-						loop = true;
-
-						String nameSong = sL[0];
-						String artistSong = sL[1];
-						String albumSong = sL[2];
-						int yearSong = Integer.parseInt(sL[3]);
-						int runtimeSong = Integer.parseInt(sL[4]);
-
-						song = new Cancion(nameSong, artistSong, albumSong, yearSong, runtimeSong);
-						albumList.add(song);
-					}	
-
-				album = new Album(name, artist, albumList);
-				albumLib.add(album);
-			}		
-
-		}catch(IOException e){e.printStackTrace();}	
-
-	}//READ_SONG_LIBRARY
-
-	public static boolean logIn(){
-
-		boolean log = true;
-		int indexUser = 0;
-
-		System.out.println("\t Ingresa el usuario:");
-		String logUser = input.next();
-
-		System.out.println("\t Ingresa la contraseña: [Case sensitive]");
-		String logPass = input.next();
-
-		for(int i = 0; i<usersList.size(); i++) {
-			if(logUser.equalsIgnoreCase(usersList.get(i).getUser()) &&  logPass.equalsIgnoreCase(usersList.get(i).getPass())) {
-				log = true;
-				indexUser = i;
-				break;
-			}else{
-				log = false;
-			}
-		}//FOR
-
-		currentUser = usersList.get(indexUser);
-
-		if(log) {
-			return true;
-		}else{
-			return false;
-		}
-	
-	}//LOGIN
-
-	public static void canciones(){
-
-		System.out.println("\t 0.- Añadir cancion");
-		System.out.println("\t -1.- Regresar\n\n\t ///////// TU LIBRERIA DE CANCIONES: /////////");
-
-		for(int i = 0; i<songLib.size(); i++) {
-			System.out.println("\t "+ (i+1) + ".- " + songLib.get(i).getName() + "\t\t" + songLib.get(i).getArtist());
-		}
-
-	}//CANCIONES
 
 	public static void createSong(){
 
@@ -412,17 +442,59 @@ public class MainSpotify{
 	
 	} //WRITEOUT SONG LIB
 
-	public static void albums(){
 
-		System.out.println("\t 0.- Añadir Album");
-		System.out.println("\t -1.- Regresar\n\n\t ///////// TU LIBRERIA DE ALBUMS: /////////");
+	//ALBUM FUNCTIONS 	*******************************************
 
-		for(int i = 0; i<albumLib.size(); i++) {
-			System.out.println("\t "+ (i+1) + ".- " + albumLib.get(i).getName() + "\t\t" + albumLib.get(i).getArtist());
-		}
+	public static void readAlbumLib(){
+
+		String[] sL = new String[5];
+		String[] aL = new String[5];
+		boolean loop = true;
+		albumLib.clear();	
+
+		try{
+			
+
+			br = new BufferedReader(new FileReader(currentUser.getUser().toLowerCase() + "_Library/" + "albumLib.csv"));
+			String read;
+			
+			while((read = br.readLine() ) != null){
+			
+				aL = read.split(",");
+				loop = true;
+
+				String name = aL[0];
+				String artist = aL[1];
+
+
+					br2 = new BufferedReader(new FileReader(user.getUser().toLowerCase() + "_Library/Albums/" +  name +".csv"));
+
+					String read2;
+					albumList = new ArrayList<Cancion>(); 
+					while((read2 = br2.readLine() ) != null){
+			
+						sL = read2.split(",");
+						loop = true;
+
+						String nameSong = sL[0];
+						String artistSong = sL[1];
+						String albumSong = sL[2];
+						int yearSong = Integer.parseInt(sL[3]);
+						int runtimeSong = Integer.parseInt(sL[4]);
+
+						song = new Cancion(nameSong, artistSong, albumSong, yearSong, runtimeSong);
+						albumList.add(song);
+					}	
+
+				album = new Album(name, artist, albumList);
+				albumLib.add(album);
+				
+			}		
+
+		}catch(IOException e){e.printStackTrace();}	
+
+	}//READ_SONG_LIBRARY
 	
-	}//ALBUMS
-
 	public static void createAlbum(){
 
 		boolean seguir = true;
@@ -432,6 +504,8 @@ public class MainSpotify{
 		String nombreAlbum = input.nextLine();
 		System.out.println("\t Ingresa el artista del album");
 		String artistaAlbum = input.nextLine();
+
+		albumList = new ArrayList<Cancion>(); 
 
 		do{
 
@@ -445,6 +519,7 @@ public class MainSpotify{
 
 			song = new Cancion(nombreCancion, artistaAlbum, nombreAlbum, yearCancion, rtCancion);
 			albumList.add(song);
+			songLib.add(song);
 
 			System.out.println("\t ¿Quieres añadir otra cancion ? [Y/N]");
 			char otra = input.next().charAt(0);
@@ -460,10 +535,13 @@ public class MainSpotify{
 		}while(seguir);
 
 		album = new Album(nombreAlbum, artistaAlbum, albumList);
+		album.write(currentUser);
 		albumLib.add(album);
 		writeOUTAlbumLib();
 		writeAlbumLib();
-
+		writeOUTSongLib();
+		writeSongLib();
+	
 	}//CREATE ALBUM
 
 	public static void writeOUTAlbumLib(){
@@ -496,7 +574,7 @@ public class MainSpotify{
 
 		}else{
 			for(int i = 0; i<albumLib.size(); i++) {
-			albumLib.get(i).write(currentUser);
+			albumLib.get(i).write1(currentUser);
 			}
 		}
 

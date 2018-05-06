@@ -15,6 +15,7 @@ public class Album extends Playlist{
 	}
 
 	public String getArtist(){ return artist;}
+	public ArrayList<Cancion> getSongList() {return songList;}
 	
 	@Override
 	public void write(Usuario user){
@@ -30,7 +31,7 @@ public class Album extends Playlist{
             f.createNewFile();
         }catch(IOException e){}
 
-        bw2 = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/Albums" + name +".csv",true)); 
+        bw2 = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/Albums/" + name +".csv",true)); 
 
         for(int i = 0; i<songList.size(); i++) {
         	bw2.write(songList.get(i).getName() + "," + artist + "," + name + "," + songList.get(i).getYear() + "," + songList.get(i).getRuntime());
@@ -40,6 +41,16 @@ public class Album extends Playlist{
         bw2.flush();
         bw2.close();
 
+        bw.flush();
+        bw.close();
+        }catch(IOException e){e.printStackTrace();} 
+	}
+
+	public void write1(Usuario user){
+		try{
+        bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "albumLib.csv",true)); 
+        bw.write(name + "," + artist );
+        bw.newLine();
         bw.flush();
         bw.close();
         }catch(IOException e){e.printStackTrace();} 
@@ -55,5 +66,19 @@ public class Album extends Playlist{
             bw.close();
         }catch(IOException e){e.printStackTrace();} 
     }
+
+    public void deleteFile(Usuario user){
+
+    	f = new File(user.getUser().toLowerCase() + "_Library/Albums/" + name + ".csv");
+    	f.delete();
+    }
+
+    public void printAlbumSongs(){
+
+		for(int i = 0; i<songList.size(); i++) {
+			System.out.println("\t\t * " + songList.get(i).getName());
+		}		
+
+	}//PRINT ALBUM SONGS
 
 }
