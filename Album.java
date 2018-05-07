@@ -46,7 +46,8 @@ public class Album extends Playlist{
         }catch(IOException e){e.printStackTrace();} 
 	}
 
-	public void write1(Usuario user){
+	@Override
+	public void update(Usuario user){
 		try{
         bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "albumLib.csv",true)); 
         bw.write(name + "," + artist );
@@ -54,6 +55,33 @@ public class Album extends Playlist{
         bw.flush();
         bw.close();
         }catch(IOException e){e.printStackTrace();} 
+	}
+
+	@Override
+	public void updateFile(Usuario user){
+
+
+		try{
+
+			f = new File(user.getUser().toLowerCase() + "_Library/Albums/" + name + ".csv");
+			f.getParentFile().mkdir();
+
+	        try{
+	            f.createNewFile();
+	        }catch(IOException e){}
+
+	        bw2 = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/Albums/" + name +".csv",true)); 
+
+	        for(int i = 0; i<songList.size(); i++) {
+	        	bw2.write(songList.get(i).getName() + "," + artist + "," + name + "," + songList.get(i).getYear() + "," + songList.get(i).getRuntime());
+	        	bw2.newLine();
+	        }
+	  	
+	        bw2.flush();
+	        bw2.close();
+
+		}catch(IOException e){e.printStackTrace();}
+
 	}
 
 	@Override
@@ -67,6 +95,7 @@ public class Album extends Playlist{
         }catch(IOException e){e.printStackTrace();} 
     }
 
+    @Override
     public void deleteFile(Usuario user){
 
     	f = new File(user.getUser().toLowerCase() + "_Library/Albums/" + name + ".csv");
@@ -80,5 +109,14 @@ public class Album extends Playlist{
 		}		
 
 	}//PRINT ALBUM SONGS
+
+
+	public void editData(String name, String artist){
+
+		this.name = name;
+		this.artist = artist;
+
+	}//EDIT DATA
+
 
 }

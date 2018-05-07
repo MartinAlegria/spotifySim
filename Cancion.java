@@ -23,10 +23,11 @@ public class Cancion{
         this.album = album;
         this.year = year;
         this.runtime = runtime;
-    }
+    } 
 
     public String getName(){ return name;}
     public String getArtist(){ return artist;}
+    public String getAlbum() {return album;}
     public int getYear(){return year;}
     public int getRuntime() {return runtime;}
 
@@ -44,15 +45,6 @@ public class Cancion{
         bw.newLine();
         bw.flush();
         bw.close();
-        }catch(IOException e){e.printStackTrace();} 
-    }
-
-    public void write(Usuario user, String file, String path){
-
-        try{
-        bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/Albums/" + file,true)); 
-        bw.write(name + "," + artist + "," + album + "," + year + "," + runtime);
-        bw.newLine();
         }catch(IOException e){e.printStackTrace();} 
     }
 
@@ -86,7 +78,13 @@ public class Cancion{
         }catch(IOException e){e.printStackTrace();} 
     }
 
- 
+ 	public boolean isEqual(Cancion song){
+ 		if( name.equalsIgnoreCase(song.name) && artist.equalsIgnoreCase(song.artist) ) {
+ 			return true;
+ 		}else{
+ 			return false;
+ 		}
+ 	}
 
 }//Class Cancion 
 
