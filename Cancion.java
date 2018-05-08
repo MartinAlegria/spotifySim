@@ -68,16 +68,6 @@ public class Cancion{
         setRuntime(rtCancion);
     }
 
-    public void writeOut(Usuario user){
-
-        try{
-            bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "songLib.csv")); 
-            bw.write("");
-            bw.flush();
-            bw.close();
-        }catch(IOException e){e.printStackTrace();} 
-    }
-
  	public boolean isEqual(Cancion song){
  		if( name.equalsIgnoreCase(song.name) && artist.equalsIgnoreCase(song.artist) ) {
  			return true;

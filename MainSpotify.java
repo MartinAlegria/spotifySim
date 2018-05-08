@@ -5,74 +5,86 @@ import java.io.*;
 public class MainSpotify{
 
 	//Variables
-	static Scanner input = new Scanner(System.in);
+	static Scanner input = new Scanner(System.in);						//Scanner para el input del usuario
 	
 	static ArrayList<Cancion> albumList;								//A.L. para inicializar un Album
 	static ArrayList<Cancion> playList = new ArrayList<Cancion>(); 		//A.L. para inicializar una Playlist
 	static ArrayList<Usuario> usersList = new ArrayList<Usuario>(); 	//ArrayList donde se encuentran todos los usuarios
 
-	static ArrayList<Album> albumLib = new ArrayList<Album>();
-	static ArrayList<Playlist> plistLib = new ArrayList<Playlist>();
-	static ArrayList<Cancion> songLib = new ArrayList<Cancion>();
+	static ArrayList<Album> albumLib = new ArrayList<Album>();			//A.L. donde esta la libreria de Albums del usuario
+	static ArrayList<Playlist> plistLib = new ArrayList<Playlist>();	//A.L. donde esta la libreria de PLaylists del usuario
+	static ArrayList<Cancion> songLib = new ArrayList<Cancion>();		//A.L. donde esta la libreria de Canciones del usuario
 
-	static Usuario user;
-	static Usuario currentUser;
-	static Cancion song;	
-	static Album album;
-	static Playlist plist;
-    static BufferedReader br;
-    static BufferedReader br2;
-    static BufferedWriter bw;
-	static File f = new File("users.csv");
+	static Usuario user;			//Instancia de Usuario que se usa crear un nuevo usuario
+	static Usuario currentUser;		//Instancia de Usuario donde se guarda el usuario que hizo LogIn
+	static Cancion song;			//Instancia de Usuario que se usa para crear una nueva cancion
+	static Album album;				//Instancia de Album que se usa para crear un nuevo album
+	static Playlist plist;			//Instancia de Playlist que se usa para crear una nueva playlist
+    static BufferedReader br;		//BufferedReader 1
+    static BufferedReader br2;		//BufferedReader 2, usado para la creacion de archivos de canciones de albums/playlists
+    static BufferedWriter bw;		//BufferedWriter
+	static File f = new File("users.csv"); //File donde se guardan todos los usuarios creados
 
 	public static void main(String[] args) {
 
 		System.out.println("\n\t --------- SPOTIFY ---------");
 		System.out.println("\t Bienvenido!");
 
+		/*
+			Si el archivo de users.csv está vacio significa que 
+			el programa esta re100 salido del horno (nadie lo ha usado).
+			Entonces se crear el primer usuario y se pasa al menú principal
+			del programa.
+		*/
 		if(f.length() == 0) {
 			System.out.println("\t No tienes ningun usuario creado");
 			createUser();
 		}
 
-		read();
+		read(); //Lee todos los usarios existentes para poder hacer LogIn
+
 		do{
 
 			System.out.println("\t 1.- Log-In");
 			System.out.println("\t 2.- Crear Cuenta");
 			System.out.println("\t 3.- Salir");		
 			System.out.println("\t Ingrea el número de la opcion deseada");
-			int launch = input.nextInt();
+			int launch = input.nextInt(); 
 
 			switch(launch){
-				case 1:
-					boolean correcto = false;
+				case 1: //LOGIN
+					boolean correcto = false; //Condicional para el for loop. Mientras sea falso regresara al Menu
 
 					do{
 
 						if(logIn()) {
 							System.out.println("\n\t ////////// Bienvenido " + currentUser.getName() + " //////////");
-							correcto = true;
-							readSongLib();
-							readAlbumLib();
-							readPlistLib();
+							correcto = true; //Se hizo LogIn, 
+							readSongLib(); //Se lee el archivo songLib.csv
+							readAlbumLib(); //Se lee el achivo albumLib.csv
+							readPlistLib(); //Se lee el archivo plistLib.csv
 						
-							boolean logOut = false;//VARIABLE QUE SE USA COMO CONDICIONAL DEL DOWHILE
+							boolean logOut = false;//VARIABLE QUE SE USA COMO CONDICIONAL DEL DO WHILE
 							do{
-								menu();
+								menu(); //Se muestra el menu
 								int eleccion = input.nextInt();
 
 								switch(eleccion){
 
 									case 1: //CANCIONES ------------------------------------------------------------------------------------------------
 										
-										canciones();
+										canciones();//Se muestran las canciones
 
 											int cancionesDec = input.nextInt();
 											input.nextLine();
 
+											/*
+												Se muestra el menu especifico para canciones, al igual que sus
+												opciones.
+											*/
+
 											if(cancionesDec >= 1 && cancionesDec <= songLib.size()) {
-												removeDuplicates();
+												removeDuplicates(); //Quita los duplicados de la libreria de canciones
 												System.out.println("\t --- " + songLib.get(cancionesDec - 1).getName() + " ---");
 												System.out.println("\t 1.- Reproducir Cancion"); //TIMER TASK
 												System.out.println("\t 2.- Editar Cancion");
@@ -82,10 +94,10 @@ public class MainSpotify{
 
 													switch(specificSongDec){
 
-														case 0:
+														case 0: //REGRESAR
 															break;
 
-														case 1:
+														case 1: //REPRODUCIR CANCION
 															System.out.println("\t////////// AHORA REPRODUCIENDO " + songLib.get(cancionesDec-1).getName().toUpperCase() + " ... //////////"  );
 															break;
 
@@ -97,6 +109,12 @@ public class MainSpotify{
 															break;
 
 														case 3: //BORRAR CANCION
+
+															/*
+																Se muestra que cancion se va a eliminar, se pregunta al usuario si quiere eliminarla
+																Si el input es Y, se elimina (lasinstancia de esa cancion en el index "cancionesDec-1" 
+																[la eleccion de cancion del usuario] es removida del A.L. sonLib)
+															*/
 
 															System.out.println("\t Estas Apunto De Eliminar " + songLib.get(cancionesDec-1).getName() + "\n\t ¿Quieres Continuar? [Y/N]" );
 															char delSong = input.next().charAt(0);
@@ -117,9 +135,9 @@ public class MainSpotify{
 
 													}
 
-											}else if (cancionesDec == 0){
-												createSong();
-											}else if (cancionesDec == -1){
+											}else if (cancionesDec == 0){ //CREAR CANCION
+												createSong(); 
+											}else if (cancionesDec == -1){ //REGRESAR
 												break;
 											}
 
@@ -132,6 +150,11 @@ public class MainSpotify{
 
 											if(albumsDec >= 1 && albumsDec <= albumLib.size()) { //UN ALBUM ESPECIFICO FUE SELECCIONADO
 												
+												/*
+												Se muestra el menu especifico para albums, al igual que sus
+												opciones.
+												*/
+
 												System.out.println("\t --- " + albumLib.get(albumsDec - 1).getName() + " --- ");
 												albumLib.get(albumsDec-1).printAlbumSongs();
 												System.out.println("\t 1.- Reproducir Album"); //TIMER TASK
@@ -152,6 +175,7 @@ public class MainSpotify{
 
 														case 2: //EDITAR ALBUM
 																editAlbum(albumsDec-1);
+																//Se actualizan los archivos albumLib.csv y songLib.csv
 																writeOUTSongLib();
 																writeSongLib();
 																writeOUTAlbumLib();
@@ -160,6 +184,13 @@ public class MainSpotify{
 															break;
 
 														case 3://ELIMINAR ALBUM
+
+															/*
+																Se muestra que ALBUM se va a eliminar, se pregunta al usuario si quiere eliminarlo
+																Si el input es Y, se elimina (lasinstancia de ese album en el index "albumsDec-1" 
+																[la eleccion de album del usuario] es removido del A.L. albumLib).
+															*/
+
 															System.out.println("\t Estas Apunto De Eliminar " + albumLib.get(albumsDec-1).getName() + "\n\t ¿Quieres Continuar? [Y/N]" );
 															char delAlbum = input.next().charAt(0);
 															
@@ -182,8 +213,11 @@ public class MainSpotify{
 													}//ALBUM SPECIFIC MENU
 
 											}else if(albumsDec == 0){ //CREAR ALBUM
-												createAlbum();
-												writeOUTAlbumLib();
+												createAlbum(); 
+												
+												//Se actualizan los archivos albumLib.csv y songLib.csv
+												
+												writeOUTAlbumLib(); 
 												writeAlbumLib();
 												writeOUTSongLib();
 												writeSongLib();
@@ -201,6 +235,11 @@ public class MainSpotify{
 											input.nextLine();
 
 											if(plistDec >= 1 && plistDec <= plistLib.size()){ //PLAYLIST ESPECIFICA FUE SELECCIONADA
+
+												/*
+												Se muestra el menu especifico para playlists, al igual que sus
+												opciones.
+												*/
 
 												System.out.println("\t --- " + plistLib.get(plistDec - 1).getName() + " --- ");
 												plistLib.get(plistDec - 1).printSongs();
@@ -222,12 +261,20 @@ public class MainSpotify{
 
 														case 2: //EDITAR PLAYLIST
 																editPlaylist(plistDec-1);
+																// Se actualiza el archivo plisLib.csv
 																writeOutPlaylistLib();
 																writePlaylistLib();
 																readPlistLib();
 															break;
 
 														case 3://ELIMINAR PLAYLIST
+
+															/*
+																Se muestra que Playlist se va a eliminar, se pregunta al usuario si quiere eliminarlo
+																Si el input es Y, se elimina (la instancia de ese playlist en el index "plistDec-1" 
+																[la eleccion de playlist del usuario] es removido del A.L. plistLib).
+															*/
+
 															System.out.println("\t Estas Apunto De Eliminar " + plistLib.get(plistDec-1).getName() + "\n\t ¿Quieres Continuar? [Y/N]" );
 															char delPlist = input.next().charAt(0);
 															
@@ -258,33 +305,36 @@ public class MainSpotify{
 										break;
 
 									case 4: //LOGOUT
-										writeOUTSongLib();
-										writeSongLib();
-										writeOUTAlbumLib();
-										writeAlbumLib();
-										writeOutPlaylistLib();
-										writePlaylistLib();
+
+											//Se acutalizan todos los archivos *lib.csv namas para estar seguros
+											writeOUTSongLib();
+											writeSongLib();
+											writeOUTAlbumLib();
+											writeAlbumLib();
+											writeOutPlaylistLib();
+											writePlaylistLib();
 											logOut = true;//SE VUELVE VERDADERO Y ROMPE EL LOOP
 										break;
 								}
 
 							}
-							while(!logOut);
+							while(!logOut); //Si !logOut regresa el menu, si no regresa al menu principal.
 
-						}else{
+						}else{ //La funcion logIn regresó falso
 							System.out.println("\t Usuario o contraseña incorrecta, intenta de nuevo");
 							correcto = false; //HACE QUE EL LOOP SIGA CORRIENDO
 						}
 
-					}while(!correcto);
+					}while(!correcto);//Si no se hizo logIn regresa al logIn, si no al menu principal
 
 					break;
-				case 2:
-					createUser();
+
+				case 2: //CREAR USUARIO
+					createUser(); 
 					break;
 
-				case 3:
-					System.exit(0);
+				case 3: //SALIR DEL PROGRAMA
+					System.exit(0); 
 					break;
 
 				default:
@@ -292,7 +342,7 @@ public class MainSpotify{
 
 			}//SWITCH
 
-		}while(true);
+		}while(true); //Loop infinito, ya que para salir del prgorama se necesita la opcion
 		
 
 	}//MAIN
@@ -303,7 +353,12 @@ public class MainSpotify{
 
 	//UI FUNCTIONS		*******************************************
 
+		/*
+			Imprime el Menu de opciones una vez que el usuario haga
+			LogIn
+		*/
 		public static void menu(){
+
 			System.out.println("\t 1.- Canciones");
 			System.out.println("\t 2.- Albums");
 			System.out.println("\t 3.- Playlist");
@@ -311,6 +366,13 @@ public class MainSpotify{
 			System.out.println("\t [Ingresa el numero de la opcion deseada]");
 		}//MENU
 
+		/*
+			Funcion de LogIn. El usuario ingresa un potencial usuario y contraseña.
+			La funcion busca que esos dos inputs pertenezcan a algun usuario.
+			Si pertenecen a algun usuario, la funcion regresa verdadero, de lo 
+			contrario regresa falso. De igual forma, el usuario que matchea los
+			inputs es igualado a currentUser.
+		*/
 		public static boolean logIn(){
 
 			System.out.println("\t //////// LOG-IN ////////");
@@ -318,15 +380,17 @@ public class MainSpotify{
 			int indexUser = 0;
 
 			System.out.println("\t Ingresa el usuario:");
-			String logUser = input.next();
+			String logUser = input.next(); 
 
 			System.out.println("\t Ingresa la contraseña: [Case sensitive]");
 			String logPass = input.next();
 
-			for(int i = 0; i<usersList.size(); i++) {
+			//Loop donde busca que los inputs pertenezcan al username y pass de algun usuario
+			//en el A.L. de users (userList)
+			for(int i = 0; i<usersList.size(); i++) { 
 				if(logUser.equalsIgnoreCase(usersList.get(i).getUser()) &&  logPass.equalsIgnoreCase(usersList.get(i).getPass())) {
 					log = true;
-					indexUser = i;
+					indexUser = i; //Se guarda el index donde se encuentra el usuario que matcheo los inputs
 					break;
 				}else{
 					log = false;
@@ -345,6 +409,11 @@ public class MainSpotify{
 
 	//USER FUNCTIONS	*******************************************
 
+		/*
+			Funcion que crea un nuevo usuario. Pide todos los parametros necesarios,
+			crea una nueva instancia de Usuario y la añade a usersList.
+		*/
+
 		public static void createUser(){
 
 			boolean s;
@@ -361,11 +430,16 @@ public class MainSpotify{
 				if(l.equalsIgnoreCase("gratis")) {
 					 s = false;
 				}else{  s = true;}
-			user = new Usuario(n,a,u,p,s);
-			user.write();
-			usersList.add(user);
+			user = new Usuario(n,a,u,p,s); //Crea instancia de Usuario
+			user.write(); //Llama a write
+			usersList.add(user); //La añade a usersList
 
 		}//CREATE_USER
+
+		/*
+			Funcion que lee el archivo users.csv y guarda cada usuario
+			en usersList
+		*/
 
 		public static void read(){
 
@@ -389,8 +463,8 @@ public class MainSpotify{
 					String pass = u[3];
 					boolean sub = Boolean.valueOf(u[4]);
 
-					user = new Usuario(name,age,usr,pass,sub);
-					usersList.add(user);
+					user = new Usuario(name,age,usr,pass,sub); //Crea instancia de Usuario a partir de lo escrito en el archivo
+					usersList.add(user); //Lo añade a usersList
 
 				}
 
@@ -398,11 +472,17 @@ public class MainSpotify{
 
 		}//READ
 
+		/*
+			Imprime la libreria de canciones.
+		*/
+
 		public static void canciones(){
 
 			System.out.println("\t ///////// TU LIBRERIA DE CANCIONES: /////////");
 			System.out.println("\t [Escribe el numero de tu seleccion]");
 
+			//For que imprime nombre y artista de todas las canciones
+			//en la libreria de canciones (songLib)
 			for(int i = 0; i<songLib.size(); i++) {
 				System.out.println("\t "+ (i+1) + ".- " + songLib.get(i).getName() + "\t\t" + songLib.get(i).getArtist());
 			}
@@ -413,11 +493,17 @@ public class MainSpotify{
 
 		}//CANCIONES
 
+		/*
+			Imprime la libreria de albums.
+		*/
+
 		public static void albums(){
 
 			System.out.println("\t ///////// TU LIBRERIA DE ALBUMS: /////////");
 			System.out.println("\t [Escribe el numero de tu seleccion]");
 
+			//For que imprime nombre y artista de todos los Albums
+			//en la libreria de albums (albumLib)
 			for(int i = 0; i<albumLib.size(); i++) {
 				System.out.println("\t "+ (i+1) + ".- " + albumLib.get(i).getName() + "\t" + albumLib.get(i).getArtist());
 			}
@@ -428,11 +514,17 @@ public class MainSpotify{
 		
 		}//ALBUMS
 
+		/*
+			Imprime la libreria de playlists.
+		*/
+
 		public static void plists(){
 
 			System.out.println("\t ///////// TU LIBRERIA DE PLAYLISTS: /////////");
 			System.out.println("\t [Escribe el numero de tu seleccion]");
 
+			//For que imprime nombre y artista de todas las playlists
+			//en la libreria de playlist (plistLib)
 			for(int i = 0; i<plistLib.size(); i++) {
 				System.out.println("\t "+ (i+1) + ".- " + plistLib.get(i).getName() + "\t" + plistLib.get(i).getDesc());
 			}
@@ -446,6 +538,11 @@ public class MainSpotify{
 
 	//SONG FUNCTIONS	*******************************************
 
+		/*
+			Funcion que lee el archivo songLib.csv, crea instancias de Cancion
+			y las guarda en songLib (ArrayList)
+		*/
+
 		public static void readSongLib(){
 
 			String[] sL = new String[5];
@@ -454,11 +551,11 @@ public class MainSpotify{
 
 			try{
 				
-
+				//Para leer albumLib.csv
 				br = new BufferedReader(new FileReader(currentUser.getUser().toLowerCase() + "_Library/" + "songLib.csv"));
 				String read;
 				
-				while((read = br.readLine() ) != null){
+				while((read = br.readLine() ) != null){ //Mientras la siguiente linea no sea null(vacia)
 				
 					sL = read.split(",");
 					loop = true;
@@ -469,14 +566,18 @@ public class MainSpotify{
 					int year = Integer.parseInt(sL[3]);
 					int runtime = Integer.parseInt(sL[4]);
 
-					song = new Cancion(name, artist, album, year, runtime);
-					songLib.add(song);
-					removeDuplicates();
-				}		
+					song = new Cancion(name, artist, album, year, runtime); //Crea instancia de Cancion
+					songLib.add(song); //La guarda en songLib
+				}
 
 			}catch(IOException e){e.printStackTrace();}	
 
 		}//READ_SONG_LIBRARY
+
+		/*
+			Funcion que crea una cancion. Pide los parametros para una cancion
+			crea la instancia de Cancion y la guarda en songLib.
+		*/
 
 		public static void createSong(){
 
@@ -493,15 +594,22 @@ public class MainSpotify{
 			System.out.println("\t Ingresa el runtime aproximado de la cancion en segundos \n \t [Ej. 1m = 60s; 2m = 120s; 3m= 180s; 4m = 240s]" );
 			int rtCancion = input.nextInt();
 
-			song = new Cancion(nombreCancion, artistaCancion, n_albumCancion, yearCancion, rtCancion);
-			songLib.add(song);
+			song = new Cancion(nombreCancion, artistaCancion, n_albumCancion, yearCancion, rtCancion); //Crea instancia de Cancion
+			songLib.add(song);//Añade la cancion a songLib
+			//Actualiza el archivo songLib.csv
 			writeOUTSongLib();
 			writeSongLib();
 		
 		}//CREATE_SONG
 
+		/*
+			Escribe en el archivo songLib.csv todas las canciones que estan en 
+			songLib (ArrayList)
+		*/
+
 		public static void writeSongLib(){
 
+			//Si songLib está vacio no guarda nada ( --> "")
 			if(songLib.size() == 0) {
 			try{
 	            bw = new BufferedWriter(new FileWriter(currentUser.getUser().toLowerCase() + "_Library/" + "songLib.csv")); 
@@ -510,7 +618,8 @@ public class MainSpotify{
 	            bw.close();
 	        }catch(IOException e){e.printStackTrace();} 
 
-			}else{
+			}else{ //Si songLib tiene algo
+				//Para cada cancion en songLib, llama la funcion wr
 				for(int i = 0; i<songLib.size(); i++) {
 				songLib.get(i).write(currentUser);
 				}
@@ -518,25 +627,31 @@ public class MainSpotify{
 		
 		} //WRITE SONG LIB
 
-		public static void writeOUTSongLib(){
+		/*
+			Vacia el archivo songLib.csv
+		*/
 
-			if(songLib.size() == 0) {
+		public static void writeOUTSongLib(){
 			try{
 	            bw = new BufferedWriter(new FileWriter(currentUser.getUser().toLowerCase() + "_Library/" + "songLib.csv")); 
 	            bw.write("");
 	            bw.flush();
 	            bw.close();
 	        }catch(IOException e){e.printStackTrace();} 
-
-			}else{
-				for(int i = 0; i<songLib.size(); i++) {
-				songLib.get(i).writeOut(currentUser);
-				}
-			}
 		
 		} //WRITEOUT SONG LIB
 
+		/*
+			Remueve los duplicados que puede haber en la librearia de 
+			canciones
+		*/
+
 		public static void removeDuplicates(){
+
+			/*
+				La funcion compara cada index de songLib con los demás
+				si es igual (Nombre y Artista), se elimina.
+			*/
 
 			if(songLib.size() > 1) {
 				for(int i = 0; i<songLib.size(); i++) {
@@ -555,10 +670,15 @@ public class MainSpotify{
 
 	//ALBUM FUNCTIONS 	*******************************************
 
+		/*
+			Funcion que lee albumLib.csv y los archivos individuales de
+			cada album.
+		*/
+
 		public static void readAlbumLib(){
 
-			String[] sL = new String[5];
-			String[] aL = new String[5];
+			String[] sL = new String[5]; //Canciones de archivos individuales
+			String[] aL = new String[5]; //Albums 
 			boolean loop = true;
 			albumLib.clear();	
 
@@ -568,19 +688,22 @@ public class MainSpotify{
 				br = new BufferedReader(new FileReader(currentUser.getUser().toLowerCase() + "_Library/" + "albumLib.csv"));
 				String read;
 				
-				while((read = br.readLine() ) != null){
+				//Lee el archivo linea por linea hasta que la siguiente linea este vacía
+				while((read = br.readLine() ) != null){ 
 				
 					aL = read.split(",");
 					loop = true;
 
-					String name = aL[0];
-					String artist = aL[1];
+					String name = aL[0]; //guarda el nombre del album
+					String artist = aL[1];// guarda el archivo del album
 
-
+						//Lee el archivo individual del album, donde se encuentran las canciones del album
 						br2 = new BufferedReader(new FileReader(user.getUser().toLowerCase() + "_Library/Albums/" +  name +".csv"));
 
 						String read2;
-						albumList = new ArrayList<Cancion>(); 
+						albumList = new ArrayList<Cancion>(); //Crea nuevo A.L. para el Song List del album
+
+						//Lee el archivo linea por linea hasta que la siguiente linea este vacía
 						while((read2 = br2.readLine() ) != null){
 				
 							sL = read2.split(",");
@@ -592,13 +715,13 @@ public class MainSpotify{
 							int yearSong = Integer.parseInt(sL[3]);
 							int runtimeSong = Integer.parseInt(sL[4]);
 
-							song = new Cancion(nameSong, artistSong, albumSong, yearSong, runtimeSong);
-							albumList.add(song);
+							song = new Cancion(nameSong, artistSong, albumSong, yearSong, runtimeSong); //Crea instancia de Cancion
+							albumList.add(song);//La añade a albumList
 						
 						}	
 
-					album = new Album(name, artist, albumList);
-					albumLib.add(album);
+					album = new Album(name, artist, albumList); //Crea instancia de Album
+					albumLib.add(album); //Lo añade a la libreariade albums
 					
 				}		
 
@@ -606,6 +729,10 @@ public class MainSpotify{
 
 		}//READ_SONG_LIBRARY
 		
+		/*
+			Funcion para crear album. Pide parametros de Album, crea instancia de Album. 
+			Las canciones creadas en el album tambien son añadidas a la libreria de canciones.
+		*/
 		public static void createAlbum(){
 
 			boolean seguir = true;
@@ -628,9 +755,9 @@ public class MainSpotify{
 				System.out.println("\t Ingresa el runtime aproximado de la cancion en segundos \n \t [Ej. 1m = 60s; 2m = 120s; 3m= 180s; 4m = 240s]" );
 				int rtCancion = input.nextInt();
 
-				song = new Cancion(nombreCancion, artistaAlbum, nombreAlbum, yearCancion, rtCancion);
-				albumList.add(song);
-				songLib.add(song);
+				song = new Cancion(nombreCancion, artistaAlbum, nombreAlbum, yearCancion, rtCancion);//Crea instancia de Cancion
+				albumList.add(song); //La añade a albumList
+				songLib.add(song); //Añade la cancion a la librearia de canciones
 
 				System.out.println("\t ¿Quieres añadir otra cancion ? [Y/N]");
 				char otra = input.next().charAt(0);
@@ -645,12 +772,18 @@ public class MainSpotify{
 
 			}while(seguir);
 
-			album = new Album(nombreAlbum, artistaAlbum, albumList);
-			album.write(currentUser);
-			albumLib.add(album);
+			album = new Album(nombreAlbum, artistaAlbum, albumList); //Crea instancia de Album
+			album.write(currentUser); //Llama a funcion Write
+			albumLib.add(album); //Añade el album a la libreria de Albums
 			
 		}//CREATE ALBUM
 		
+		/*
+			Funcion para editar album. Cuando lo edita, elimina el archivo individual de 
+			canciones del album y crea uno nuevo con las canciones editadas. (Esto debido
+			a que no se pueden editar lineas específicas en java)
+		*/
+
 		public static void editAlbum(int index){
 
 			boolean seguir = true;
@@ -691,15 +824,18 @@ public class MainSpotify{
 
 			}while(seguir);
 
-			albumLib.get(index).deleteFile(currentUser);
-			albumLib.get(index).editData(nombreAlbum,artistaAlbum);
-			albumLib.get(index).updateFile(currentUser);
+			albumLib.get(index).deleteFile(currentUser); //Borra archivo individual de canciones
+			albumLib.get(index).editData(nombreAlbum,artistaAlbum); //Edita los parametros de Album. No necesita parametro de songList por el paso por referencia.
+			albumLib.get(index).updateFile(currentUser); //Escribe el archivo individual con las nuevas canciones
 
 		}//EDIT ALBUM
 
+		/*
+			Vacia el archivo albumLib.csv
+		*/
+
 		public static void writeOUTAlbumLib(){
 
-			if(albumLib.size() == 0) {
 			try{
 	            bw = new BufferedWriter(new FileWriter(currentUser.getUser().toLowerCase() + "_Library/" + "albumLib.csv")); 
 	            bw.write("");
@@ -707,13 +843,12 @@ public class MainSpotify{
 	            bw.close();
 	        }catch(IOException e){e.printStackTrace();} 
 
-			}else{
-				for(int i = 0; i<albumLib.size(); i++) {
-				albumLib.get(i).writeOut(currentUser);
-				}
-			}
-
 		}//WRITE OUT ALBUM LIB
+
+
+		/*
+			Escribe los albums en albumLib (ArrayList) en el archivo albumLib.csv
+		*/
 
 		public static void writeAlbumLib(){
 
@@ -733,6 +868,12 @@ public class MainSpotify{
 
 		}//WRITE ALBUM LIB
 
+		/*
+			Cuando un album es eliminado, sus canciones tambien. Es por esto
+			que esta funcion elimina las canciones que estaban en el album, de 
+			la libreria de canciones
+		*/
+
 		public static void removeSongsAlbum(int index){
 
 			for(int i = 0; i<songLib.size(); i++) {
@@ -751,6 +892,12 @@ public class MainSpotify{
 		}//REMOVE SONGS ALBUM
 
 	//PLAYLIST FUNCTIONS 	*******************************************
+
+		/*
+			Lee el archivo plistLib.csv, al igual que su archivo individual de 
+			canciones. Despues, crea instancias de playlist y las guarda en el 
+			ArrayList plistLib.
+		*/
 
 		public static void readPlistLib(){
 
@@ -802,6 +949,11 @@ public class MainSpotify{
 
 		}//READ PLAYLIST LIB
 
+		/*
+			Funcion que pide los parametros de una playlist para la creacion de
+			la misma.
+		*/
+
 		public static void createPlist(){
 
 			boolean seguir = true;
@@ -850,11 +1002,17 @@ public class MainSpotify{
 			
 		}//CREATE ALBUM
 
+		/*
+			Funcion para editar una playlist. Cuando la edita, elimina el archivo individual de 
+			canciones de ella y crea uno nuevo con las canciones editadas. (Esto debido
+			a que no se pueden editar lineas específicas en java)
+		*/
+
 		public static void editPlaylist(int index){
 
 			boolean seguir = true;
 
-			System.out.println("\t CREAR PLAYLIST");
+			System.out.println("\t EDITAR PLAYLIST");
 			System.out.println("\t Ingresa el nombre de la playList");
 			String nombrePlist = input.nextLine();
 			System.out.println("\t Ingresa una descripcion pequeña de la playList");
@@ -900,9 +1058,12 @@ public class MainSpotify{
 
 		}//EDIT PLAYLIST
 
+		/*
+			Vacia el archivo plistLib.csv
+		*/
+
 		public static void writeOutPlaylistLib(){
 
-			if(plistLib.size() == 0) {
 			try{
 	            bw = new BufferedWriter(new FileWriter(currentUser.getUser().toLowerCase() + "_Library/" + "plistLib.csv")); 
 	            bw.write("");
@@ -910,13 +1071,11 @@ public class MainSpotify{
 	            bw.close();
 	        }catch(IOException e){e.printStackTrace();} 
 
-			}else{
-				for(int i = 0; i<plistLib.size(); i++) {
-				plistLib.get(i).writeOut(currentUser);
-				}
-			}
-
 		}//WRITE OUT ALBUM LIB
+
+		/*
+			Escribe las playlists en plistLib (ArrayList) en el archivo plistLib.csv
+		*/
 
 		public static void writePlaylistLib(){
 

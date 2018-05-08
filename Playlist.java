@@ -57,15 +57,9 @@ public class Playlist{
         }catch(IOException e){e.printStackTrace();} 
 	}
 
-	public void writeOut(Usuario user){
-
-        try{
-            bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "plistLib.csv")); 
-            bw.write("");
-            bw.flush();
-            bw.close();
-        }catch(IOException e){e.printStackTrace();} 
-    }
+	/*
+		Actualiza el archivo plistLib.csv
+	*/
 
     public void update(Usuario user){
 		try{
@@ -89,6 +83,10 @@ public class Playlist{
 		this.description = desc;
 
 	}//EDIT DATA
+
+	/*
+		Actualiza el archivo individual de canciones de una playlist
+	*/
 
 	public void updateFile(Usuario user){
 
@@ -114,7 +112,7 @@ public class Playlist{
 
 		}catch(IOException e){e.printStackTrace();}
 
-	}
+	}//UPDATE FILE
 
 	public void printSongs(){
 

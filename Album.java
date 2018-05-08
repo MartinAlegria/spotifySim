@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Album extends Playlist{
+public class Album extends Playlist{ //Hereda de la Clase Playlist
 
 	private String artist; //Artista del album
 	static BufferedWriter bw;
@@ -44,10 +44,15 @@ public class Album extends Playlist{
         bw.flush();
         bw.close();
         }catch(IOException e){e.printStackTrace();} 
-	}
+	}//WRITE
+
+	/*
+		Actualiza el archivo albumLib.csv
+	*/
 
 	@Override
 	public void update(Usuario user){
+
 		try{
         bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "albumLib.csv",true)); 
         bw.write(name + "," + artist );
@@ -55,11 +60,15 @@ public class Album extends Playlist{
         bw.flush();
         bw.close();
         }catch(IOException e){e.printStackTrace();} 
-	}
+
+	}//UPDATE
+
+	/*
+		Actualiza el archivo individual de canciones de un album
+	*/
 
 	@Override
 	public void updateFile(Usuario user){
-
 
 		try{
 
@@ -81,26 +90,15 @@ public class Album extends Playlist{
 	        bw2.close();
 
 		}catch(IOException e){e.printStackTrace();}
-
-	}
-
-	@Override
-	public void writeOut(Usuario user){
-
-        try{
-            bw = new BufferedWriter(new FileWriter(user.getUser().toLowerCase() + "_Library/" + "albumLib.csv")); 
-            bw.write("");
-            bw.flush();
-            bw.close();
-        }catch(IOException e){e.printStackTrace();} 
-    }
+	
+	}//UPDATE FILE
 
     @Override
     public void deleteFile(Usuario user){
 
     	f = new File(user.getUser().toLowerCase() + "_Library/Albums/" + name + ".csv");
     	f.delete();
-    }
+    }//DELETE FILE
 
     public void printAlbumSongs(){
 
