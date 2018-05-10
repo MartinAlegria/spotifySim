@@ -47,7 +47,7 @@ public class MainSpotify{
 
 			System.out.println("\t 1.- Log-In");
 			System.out.println("\t 2.- Crear Cuenta");
-			System.out.println("\t 3.- Salir");		
+			System.out.println("\t 3.- Salir");	
 			System.out.println("\t Ingrea el número de la opcion deseada");
 			int launch = input.nextInt(); 
 
@@ -208,7 +208,7 @@ public class MainSpotify{
 																System.out.println("\t Eliminacion Cancelada\n\n");
 															}
 
-															break;
+														break;
 
 													}//ALBUM SPECIFIC MENU
 
@@ -228,7 +228,7 @@ public class MainSpotify{
 
 										break;
 
-									case 3: //PLAYLISTS
+									case 3: //PLAYLISTS ------------------------------------------------------------------------------------------------
 
 											plists();
 											int plistDec = input.nextInt();
@@ -304,16 +304,65 @@ public class MainSpotify{
 
 										break;
 
-									case 4: //LOGOUT
+									case 4: //SETTINGS ------------------------------------------------------------------------------------------------
+
+										System.out.println("\t " + currentUser.print());
+										settings();
+										int specificSettings = input.nextInt();
+										input.nextLine();
+									
+										switch(specificSettings){
+											
+											case 1:
+												System.out.println("\t ¿Cual es tu nombre?");
+												String n = input.next();
+												currentUser.setName(n);
+												break;
+											
+											case 2: 
+												System.out.println("\t ¿Cual es tu edad?");
+												int a = input.nextInt();
+												currentUser.setAge(a);
+												break;
+
+											case 3:
+												System.out.println("\t ¿Cual va a ser tu nueva contraseña?");
+												String p = input.next();
+												currentUser.setPassword(p);
+												break;
+
+											case 4:
+												boolean s;
+												System.out.println("\t ¿Que tipo de subscripción vas a tener? [gratis/premium]");
+												String l = input.next();
+												if(l.equalsIgnoreCase("gratis")) {
+													 s = false;
+												}else{  s = true;}
+												currentUser.setSub(s);
+												break;
+
+											case 0:
+												break;
+
+										}
+
+											writeOutUser();
+											writeUser();
+
+										break;
+
+									case 5: //LOGOUT ------------------------------------------------------------------------------------------------
 
 											//Se acutalizan todos los archivos *lib.csv namas para estar seguros
+											writeOutUser();
+											writeUser();
 											writeOUTSongLib();
 											writeSongLib();
 											writeOUTAlbumLib();
 											writeAlbumLib();
 											writeOutPlaylistLib();
 											writePlaylistLib();
-											logOut = true;//SE VUELVE VERDADERO Y ROMPE EL LOOP
+											logOut = true;
 										break;
 								}
 
@@ -362,7 +411,8 @@ public class MainSpotify{
 			System.out.println("\t 1.- Canciones");
 			System.out.println("\t 2.- Albums");
 			System.out.println("\t 3.- Playlist");
-			System.out.println("\t 4.- Log-Out");
+			System.out.println("\t 4.- Settings");	
+			System.out.println("\t 5.- Log-Out");
 			System.out.println("\t [Ingresa el numero de la opcion deseada]");
 		}//MENU
 
@@ -405,7 +455,83 @@ public class MainSpotify{
 				return false;
 			}
 	
-	}//LOGIN
+		}//LOGIN
+
+		/*
+			Imprime la libreria de canciones.
+		*/
+
+		public static void canciones(){
+
+			System.out.println("\t ///////// TU LIBRERIA DE CANCIONES: /////////");
+			System.out.println("\t [Escribe el numero de tu seleccion]");
+
+			//For que imprime nombre y artista de todas las canciones
+			//en la libreria de canciones (songLib)
+			for(int i = 0; i<songLib.size(); i++) {
+				System.out.println("\t "+ (i+1) + ".- " + songLib.get(i).getName() + "\t\t" + songLib.get(i).getArtist());
+			}
+
+			System.out.println("\t ---------------------------------");
+			System.out.println("\t    ***  0.- Añadir Cancion *** ");
+			System.out.println("\t    *** -1.- Regresar ***");
+
+		}//CANCIONES
+
+		/*
+			Imprime la libreria de albums.
+		*/
+
+		public static void albums(){
+
+			System.out.println("\t ///////// TU LIBRERIA DE ALBUMS: /////////");
+			System.out.println("\t [Escribe el numero de tu seleccion]");
+
+			//For que imprime nombre y artista de todos los Albums
+			//en la libreria de albums (albumLib)
+			for(int i = 0; i<albumLib.size(); i++) {
+				System.out.println("\t "+ (i+1) + ".- " + albumLib.get(i).getName() + "\t" + albumLib.get(i).getArtist());
+			}
+
+			System.out.println("\t -----------------------------------");
+			System.out.println("\t      ***  0.- Añadir Album *** ");
+			System.out.println("\t      *** -1.- Regresar ***");
+		
+		}//ALBUMS
+
+		/*
+			Imprime la libreria de playlists.
+		*/
+
+		public static void plists(){
+
+			System.out.println("\t ///////// TU LIBRERIA DE PLAYLISTS: /////////");
+			System.out.println("\t [Escribe el numero de tu seleccion]");
+
+			//For que imprime nombre y artista de todas las playlists
+			//en la libreria de playlist (plistLib)
+			for(int i = 0; i<plistLib.size(); i++) {
+				System.out.println("\t "+ (i+1) + ".- " + plistLib.get(i).getName() + "\t" + plistLib.get(i).getDesc());
+			}
+
+			System.out.println("\t -----------------------------------");
+			System.out.println("\t      ***  0.- Crear Playlist *** ");
+			System.out.println("\t      *** -1.- Regresar ***");
+		
+		}//PLAYLISTS
+
+		/*
+			Imprime las opciones de settings
+		*/
+
+		public static void settings(){
+			System.out.println("\t [Ingresa el numero de la opcion deseada]");
+			System.out.println("\t 1.- Editar nombre ");
+			System.out.println("\t 2.- Editar edad ");
+			System.out.println("\t 3.- Cambiar contraseña ");
+			System.out.println("\t 4.- Cambiar tipo de subscripcion ");
+			System.out.println("\t 0.- Regresar ");
+		}
 
 	//USER FUNCTIONS	*******************************************
 
@@ -472,69 +598,23 @@ public class MainSpotify{
 
 		}//READ
 
-		/*
-			Imprime la libreria de canciones.
-		*/
-
-		public static void canciones(){
-
-			System.out.println("\t ///////// TU LIBRERIA DE CANCIONES: /////////");
-			System.out.println("\t [Escribe el numero de tu seleccion]");
-
-			//For que imprime nombre y artista de todas las canciones
-			//en la libreria de canciones (songLib)
-			for(int i = 0; i<songLib.size(); i++) {
-				System.out.println("\t "+ (i+1) + ".- " + songLib.get(i).getName() + "\t\t" + songLib.get(i).getArtist());
-			}
-
-			System.out.println("\t ---------------------------------");
-			System.out.println("\t    ***  0.- Añadir Cancion *** ");
-			System.out.println("\t    *** -1.- Regresar ***");
-
-		}//CANCIONES
-
-		/*
-			Imprime la libreria de albums.
-		*/
-
-		public static void albums(){
-
-			System.out.println("\t ///////// TU LIBRERIA DE ALBUMS: /////////");
-			System.out.println("\t [Escribe el numero de tu seleccion]");
-
-			//For que imprime nombre y artista de todos los Albums
-			//en la libreria de albums (albumLib)
-			for(int i = 0; i<albumLib.size(); i++) {
-				System.out.println("\t "+ (i+1) + ".- " + albumLib.get(i).getName() + "\t" + albumLib.get(i).getArtist());
-			}
-
-			System.out.println("\t -----------------------------------");
-			System.out.println("\t      ***  0.- Añadir Album *** ");
-			System.out.println("\t      *** -1.- Regresar ***");
+		public static void writeOutUser(){
+			try{
+	            bw = new BufferedWriter(new FileWriter("users.csv")); 
+	            bw.write("");
+	            bw.flush();
+	            bw.close();
+	        }catch(IOException e){e.printStackTrace();} 
 		
-		}//ALBUMS
+		} //WRITEOUT SONG LIB
 
-		/*
-			Imprime la libreria de playlists.
-		*/
+		public static void writeUser(){
 
-		public static void plists(){
+				for(int i = 0; i<usersList.size(); i++) {
+					usersList.get(i).update();
+				}
 
-			System.out.println("\t ///////// TU LIBRERIA DE PLAYLISTS: /////////");
-			System.out.println("\t [Escribe el numero de tu seleccion]");
-
-			//For que imprime nombre y artista de todas las playlists
-			//en la libreria de playlist (plistLib)
-			for(int i = 0; i<plistLib.size(); i++) {
-				System.out.println("\t "+ (i+1) + ".- " + plistLib.get(i).getName() + "\t" + plistLib.get(i).getDesc());
-			}
-
-			System.out.println("\t -----------------------------------");
-			System.out.println("\t      ***  0.- Crear Playlist *** ");
-			System.out.println("\t      *** -1.- Regresar ***");
-		
-		}//PLAYLISTS
-
+		}
 
 	//SONG FUNCTIONS	*******************************************
 

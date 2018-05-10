@@ -25,7 +25,21 @@ public class Usuario{
 	public String getName(){return name;}
 	public String getUser(){return username;}
 	public String getPass(){return password;}
-
+	public void setName(String name){
+		this.name=name;
+	}
+	public void setAge(int age){
+		this.age=age;
+	}
+	public void setUserName(String username){
+		this.username=username;
+	}
+	public void setPassword(String password){
+		this.password=password;
+	}
+	public void setSub(boolean sub){
+		this.sub=sub;
+	}
 	public String print(){
 		String a;
 		if(sub) {
@@ -33,17 +47,17 @@ public class Usuario{
 		}else{
 			a = "Gratis";
 		}
-		return "\n\t " + name + "\n\t " + age + "\n\t " + username + "\n\t "+ a;
+		return "\n\t " + "Nombre: " + name + "\n\t " + "Edad: " + age + "\n\t " + "Usuario: " + username + "\n\t "+ "Suscripción: " +  a + "\n";
 	}
 
 	public void write(){
 
 		try{
-		bw = new BufferedWriter(new FileWriter("users.csv",true)); 
-		bw.write(name + "," + age + "," + username + "," + password + "," + sub);
-		bw.newLine();
-		bw.flush();
-		bw.close();
+			bw = new BufferedWriter(new FileWriter("users.csv",true)); 
+			bw.write(name + "," + age + "," + username + "," + password + "," + sub);
+			bw.newLine();
+			bw.flush();
+			bw.close();
 		}catch(IOException e){e.printStackTrace();}	
 
 		f = new File(username.toLowerCase() + "_Library/songLib.csv");
@@ -66,6 +80,18 @@ public class Usuario{
         try{
             f.createNewFile();
         }catch(IOException e){}
+
+	}
+
+	public void update(){
+
+		try{
+			bw = new BufferedWriter(new FileWriter("users.csv",true)); 
+			bw.write(name + "," + age + "," + username + "," + password + "," + sub);
+			bw.newLine();
+			bw.flush();
+			bw.close();
+		}catch(IOException e){e.printStackTrace();}	
 
 	}
 
