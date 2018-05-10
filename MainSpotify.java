@@ -40,7 +40,7 @@ public class MainSpotify{
 
 			System.out.println("\t 1.- Log-In");
 			System.out.println("\t 2.- Crear Cuenta");
-			System.out.println("\t 3.- Salir");		
+			System.out.println("\t 3.- Salir");	
 			System.out.println("\t Ingrea el número de la opcion deseada");
 			int launch = input.nextInt();
 
@@ -256,8 +256,52 @@ public class MainSpotify{
 											}
 
 										break;
+									case 4: //SETTINGS
+									System.out.println("\t [Ingresa el numero de la opcion deseada]");
+									System.out.println("\t 1. Editar nombre ");
+									System.out.println("\t 2. Editar edad ");
+									System.out.println("\t 3. Cambiar nombre de usuario ");
+									System.out.println("\t 4. Cambiar contraseña ");
+									System.out.println("\t 5. Cambiar tipo de subscripcion ");
+									System.out.println("\t 0. Regresar ");
+									int specificPlistDec = input.nextInt();
+									input.nextLine();
+									switch(specificPlistDec){
+										case 1:
+										System.out.println("\t ¿Cual es tu nombre?");
+										String n = input.next();
+										currentUser.setName(n);
+										break;
+										case 2: 
+										System.out.println("\t ¿Cual es tu edad?");
+										int a = input.nextInt();
+										currentUser.setAge(a);
+										break;
+										case 3:
+										System.out.println("\t ¿Cual va a ser tu nombre de usaurio?");
+										String u = input.next();
+										currentUser.setUserName(u);
+										break;
+										case 4:
+										System.out.println("\t ¿Cual va a ser tu nueva contraseña?");
+										String p = input.next();
+										currentUser.setPassword(p);
+										break;
+										case 5:
+										boolean s;
+										System.out.println("\t ¿Que tipo de subscripción vas a tener? [gratis/premium]");
+										String l = input.next();
+										if(l.equalsIgnoreCase("gratis")) {
+											 s = false;
+										}else{  s = true;}
+										currentUser.setSub(s);
+										break;
+										case 0:
+										break;
+									}
 
-									case 4: //LOGOUT
+									break;
+									case 5: //LOGOUT
 										writeOUTSongLib();
 										writeSongLib();
 										writeOUTAlbumLib();
@@ -307,7 +351,8 @@ public class MainSpotify{
 			System.out.println("\t 1.- Canciones");
 			System.out.println("\t 2.- Albums");
 			System.out.println("\t 3.- Playlist");
-			System.out.println("\t 4.- Log-Out");
+			System.out.println("\t 4. Settings");	
+			System.out.println("\t 5.- Log-Out");
 			System.out.println("\t [Ingresa el numero de la opcion deseada]");
 		}//MENU
 

@@ -25,7 +25,21 @@ public class Usuario{
 	public String getName(){return name;}
 	public String getUser(){return username;}
 	public String getPass(){return password;}
-
+	public void setName(String name){
+		this.name=name;
+	}
+	public void setAge(int age){
+		this.age=age;
+	}
+	public void setUserName(String username){
+		this.username=username;
+	}
+	public void setPassword(String password){
+		this.password=password;
+	}
+	public void setSub(boolean sub){
+		this.sub=sub;
+	}
 	public String print(){
 		String a;
 		if(sub) {
